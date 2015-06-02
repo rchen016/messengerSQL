@@ -370,7 +370,15 @@ public class ProfNetwork {
    
    public static void viewFriends(ProfNetwork esql, String userId)
    {
-	   
+	   String status = "Request";
+	   System.out.println(userId);
+	   try{
+		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE status='%s' AND connectionId='%s'",status,userId);
+		   esql.executeQueryAndPrintResult(query);
+	   }catch(Exception e)
+	   {
+		   System.err.println(e.getMessage());
+	   }
    }
    public static void acceptRequest(ProfNetwork esql, String userId)
    {
