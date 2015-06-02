@@ -309,7 +309,18 @@ public class ProfNetwork {
    //Project 3
    public static void updatePassword(ProfNetwork esql)
    {
-	
+	   try{
+		   //Prompt For Password
+		   System.out.println("New Password?: ");
+		   String new_password = in.readLine();
+		   System.out.println(new_password);
+		   //Update
+	       String query = String.format("UPDATE USR SET password='%s'",new_password);
+	  	   esql.executeUpdate(query);
+	   }
+  	   catch(Exception e){
+  		 System.out.println("Invalid Password Update");
+  	   }
    }
    
    public static void friendFinder(ProfNetwork esql)
