@@ -347,7 +347,7 @@ public class ProfNetwork {
 		   //Make sure user exist in DB
 		   String query = String.format("SELECT * FROM USR WHERE userId='%s'",getName);
 		   int isValid = esql.executeQuery(query);
-		   System.out.println(userId+" "+getName);
+		  // System.out.println(userId+" "+getName);
 		   if(isValid > 0)
 		   {
 			   String query2 = String.format("INSERT INTO CONNECTION_USR VALUES('%s','%s','%s')",getName,userId,req);
@@ -370,10 +370,10 @@ public class ProfNetwork {
    
    public static void viewFriends(ProfNetwork esql, String userId)
    {
-	   String status = "Request";
-	   System.out.println(userId);
+	   String status = "Accept";
+	  // System.out.println(userId);
 	   try{
-		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE status='%s' AND userId='%s'",status,userId);
+		   String query = String.format("SELECT connectionid FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
 		   esql.executeQueryAndPrintResult(query);
 	   }catch(Exception e)
 	   {
@@ -382,16 +382,18 @@ public class ProfNetwork {
    }
    public static void acceptRequest(ProfNetwork esql, String userId)
    {
-	   String status = "Accept";
+	   String status = "Request";
+	   String acceptStatus = "Accept";
 	   try{
 		   //Display requesters
-		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE status='%s' AND userId='%s'",status,userId);
+		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
 		   esql.executeQueryAndPrintResult(query);
 		   //Prompt who to add
 		   System.out.println("Who do you want to accept?");
 		   String getName = in.readLine();
+		   //still need to add valid checker
 		   //Added them
-		   String query2 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",status,getName);
+		   String query2 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",acceptStatus,getName);
 		   esql.executeUpdate(query2);
 		   System.out.println("Accepted!");
 	   }catch(Exception e)
