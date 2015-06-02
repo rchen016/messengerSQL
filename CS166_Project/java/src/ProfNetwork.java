@@ -382,7 +382,13 @@ public class ProfNetwork {
    }
    public static void acceptRequest(ProfNetwork esql, String userId)
    {
-	   
+	   String status = "Accept";
+	   try{
+	   	
+	   }catch(Exception e)
+	   {
+		   Syste,.err.println(e.Message());
+	   }
    }
    
    /////////////////////////////////////////////////////////////////////////////////////
