@@ -325,7 +325,16 @@ public class ProfNetwork {
    
    public static void friendFinder(ProfNetwork esql)
    {
-	   
+	   try{
+		   //Prompt For friend lookup
+		   System.out.println("Who to lookup?");
+		   String whichFriend = in.readLine();
+		   String query = String.format("SELECT userId FROM USR WHERE name='%s'",whichFriend);
+		   esql.executeQueryAndPrintResult(query);
+	   }
+	   catch(Exception e){
+	   		System.out.println("Friend Finder Error");
+	   }
    }
    
    public static void sendRequest(ProfNetwork esql, String userId)
