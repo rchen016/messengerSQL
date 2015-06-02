@@ -339,7 +339,28 @@ public class ProfNetwork {
    
    public static void sendRequest(ProfNetwork esql, String userId)
    {
-	   
+	   try{
+		   //Prompt For who to add
+		   System.out.println("Who to Add?");
+		   String getName = in.readLine();
+		   String req = "Request";
+		   //Make sure user exist in DB
+		   String query = String.format("SELECT * FROM USR WHERE userId='%s'",getName);
+		   int isValid = esql.executeQuery(query);
+		   System.out.println(userId+" "+getName);
+		   if(isValid > 0)
+		   {
+			   String query2 = String.format("INSERT INTO CONNECTION_USR VALUES('%s','%s','%s')",getName,userId,req);
+			   esql.executeUpdate(query2);
+			   System.out.println("User Added!");
+		   }
+		   else
+		   {
+			   System.out.println("User NOT Added!");
+		   }
+	   }catch(Exception e){
+		   System.err.println(e.getMessage());
+	   }
    }
    
    public static void writeMessage(ProfNetwork esql)
