@@ -1,0 +1,1 @@
+/usr/bin/postgres "-D" "/tmp/rchen016/data" "-p" "33142"
