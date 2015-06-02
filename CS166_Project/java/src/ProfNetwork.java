@@ -267,21 +267,10 @@ public class ProfNetwork {
               while(usermenu) {
                 System.out.println("MAIN MENU");
                 System.out.println("---------");
-                System.out.println("1. Find a Homie");
-                System.out.println("2. Update Password");
-                System.out.println("3. Write a new message");
-                System.out.println("4. Send Connection Request");
-				System.out.println("5. Accept Connection Request");
-				System.out.println("6. View Friends");
                 System.out.println(".........................");
                 System.out.println("9. Log out");
                 switch (readChoice()){
-                   case 1: friendFinder(esql); break;
-                   case 2: updatePassword(esql); break;
-                   case 3: writeMessage(esql); break;
-                   case 4: sendRequest(esql,authorisedUser); break;
-				   case 5: acceptRequest(esql,authorisedUser); break;
-				   case 6: viewFriends(esql,authorisedUser); break;
+                   
                    case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
@@ -304,92 +293,7 @@ public class ProfNetwork {
       }//end try
    }//end main
    
-   /////////////////////////////////////////////////////////////////////////////////////
-   /////////////////////////////////////////////////////////////////////////////////////
-   //Project 3
-   public static void updatePassword(ProfNetwork esql)
-   {
-	   try{
-		   //Prompt For Password
-		   System.out.println("New Password?: ");
-		   String new_password = in.readLine();
-		   System.out.println(new_password);
-		   //Update
-	       String query = String.format("UPDATE USR SET password='%s'",new_password);
-	  	   esql.executeUpdate(query);
-	   }
-  	   catch(Exception e){
-  		 System.out.println("Invalid Password Update");
-  	   }
-   }
-   
-   public static void friendFinder(ProfNetwork esql)
-   {
-	   try{
-		   System.out.println("Who to lookup?");
-		   String whichFriend = in.readLine();
-		   String query = String.format("SELECT userId FROM USR WHERE name='%s'",whichFriend);
-		   esql.executeQueryAndPrintResult(query);
-	   }
-	   catch(Exception e){
-	   		System.out.println("Friend Finder Error");
-	   }
-   }
-   
-   public static void sendRequest(ProfNetwork esql, String userId)
-   {
-	   try{
-		   System.out.println("Who to Add?");
-		   String getName = in.readLine();
-		   String req = "Request";
-		   String query = String.format("SELECT * FROM USR WHERE userId='%s'",getName);
-		   int isValid = esql.executeQuery(query);
-		   System.out.println(userId+" "+getName);
-		   if(isValid > 0)
-		   {
-			   String query2 = String.format("INSERT INTO CONNECTION_USR VALUES('%s','%s','%s')",getName,userId,req);
-			   esql.executeUpdate(query2);
-			   System.out.println("User Added!");
-		   }
-		   else
-		   {
-			   System.out.println("User NOT Added!");
-		   }
-	   }catch(Exception e){
-		   System.err.println(e.getMessage());
-	   }
-   }
-   
-   public static void writeMessage(ProfNetwork esql)
-   {
-   	
-   }
-   
-   public static void viewFriends(ProfNetwork esql, String userId)
-   {
-	   String status = "Request";
-	   System.out.println(userId);
-	   try{
-		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE status='%s' AND connectionId='%s'",status,userId);
-		   esql.executeQueryAndPrintResult(query);
-	   }catch(Exception e)
-	   {
-		   System.err.println(e.getMessage());
-	   }
-   }
-   public static void acceptRequest(ProfNetwork esql, String userId)
-   {
-	   String status = "Accept";
-	   try{
-	   	
-	   }catch(Exception e)
-	   {
-		   Syste,.err.println(e.Message());
-	   }
-   }
-   
-   /////////////////////////////////////////////////////////////////////////////////////
-   /////////////////////////////////////////////////////////////////////////////////////
+  
    
    public static void Greeting(){
       System.out.println(
