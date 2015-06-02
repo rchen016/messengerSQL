@@ -373,7 +373,7 @@ public class ProfNetwork {
 	   String status = "Request";
 	   System.out.println(userId);
 	   try{
-		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE status='%s' AND connectionId='%s'",status,userId);
+		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE status='%s' AND userId='%s'",status,userId);
 		   esql.executeQueryAndPrintResult(query);
 	   }catch(Exception e)
 	   {
@@ -384,9 +384,19 @@ public class ProfNetwork {
    {
 	   String status = "Accept";
 	   try{
-	   	
+		   //Display requesters
+		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE status='%s' AND userId='%s'",status,userId);
+		   esql.executeQueryAndPrintResult(query);
+		   //Prompt who to add
+		   System.out.println("Who do you want to accept?");
+		   String getName = in.readLine();
+		   //Added them
+		   String query2 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",status,getName);
+		   esql.executeUpdate(query2);
+		   System.out.println("Accepted!");
 	   }catch(Exception e)
 	   {
+		   System.out.println("Error!");
 		   System.err.println(e.getMessage());
 	   }
    }
