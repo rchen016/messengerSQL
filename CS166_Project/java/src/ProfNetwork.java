@@ -267,10 +267,21 @@ public class ProfNetwork {
               while(usermenu) {
                 System.out.println("MAIN MENU");
                 System.out.println("---------");
+			    System.out.println("1. Find a Homie");
+			    System.out.println("2. Update Password");
+			    System.out.println("3. Write a new message");
+			    System.out.println("4. Send Connection Request");
+			    System.out.println("5. Accept Connection Request");
+			    System.out.println("6. View Friends");
                 System.out.println(".........................");
                 System.out.println("9. Log out");
                 switch (readChoice()){
-                   
+		   		   case 1: friendFinder(esql); break;
+			       case 2: updatePassword(esql); break;
+				   case 3: writeMessage(esql); break;
+				   case 4: sendRequest(esql,authorisedUser); break;
+				   case 5: acceptRequest(esql,authorisedUser); break;
+				   case 6: viewFriends(esql,authorisedUser); break;
                    case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
@@ -293,7 +304,44 @@ public class ProfNetwork {
       }//end try
    }//end main
    
-  
+   /////////////////////////////////////////////////////////////////////////////////////
+   /////////////////////////////////////////////////////////////////////////////////////
+   //Project 3
+   public static void updatePassword(ProfNetwork esql)
+   {
+	
+   }
+   
+   public static void friendFinder(ProfNetwork esql)
+   {
+	   
+   }
+   
+   public static void sendRequest(ProfNetwork esql, String userId)
+   {
+	   
+   }
+   
+   public static void writeMessage(ProfNetwork esql)
+   {
+   	
+   }
+   
+   public static void viewFriends(ProfNetwork esql, String userId)
+   {
+	   
+   }
+   public static void acceptRequest(ProfNetwork esql, String userId)
+   {
+	   
+   }
+   
+   /////////////////////////////////////////////////////////////////////////////////////
+   /////////////////////////////////////////////////////////////////////////////////////
+   
+   
+   
+   
    
    public static void Greeting(){
       System.out.println(
