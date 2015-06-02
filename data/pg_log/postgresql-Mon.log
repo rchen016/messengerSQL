@@ -30,3 +30,19 @@ LOG:  unexpected EOF on client connection
 LOG:  unexpected EOF on client connection
 LOG:  unexpected EOF on client connection
 LOG:  unexpected EOF on client connection
+NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "usr_pkey" for table "usr"
+NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "work_expr_pkey" for table "work_expr"
+NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "educational_details_pkey" for table "educational_details"
+NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "message_pkey" for table "message"
+NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "connection_usr_pkey" for table "connection_usr"
+LOG:  checkpoints are occurring too frequently (2 seconds apart)
+HINT:  Consider increasing the configuration parameter "checkpoint_segments".
+LOG:  checkpoints are occurring too frequently (6 seconds apart)
+HINT:  Consider increasing the configuration parameter "checkpoint_segments".
+LOG:  checkpoints are occurring too frequently (3 seconds apart)
+HINT:  Consider increasing the configuration parameter "checkpoint_segments".
+LOG:  checkpoints are occurring too frequently (3 seconds apart)
+HINT:  Consider increasing the configuration parameter "checkpoint_segments".
+LOG:  unexpected EOF on client connection
+LOG:  unexpected EOF on client connection
+LOG:  unexpected EOF on client connection
