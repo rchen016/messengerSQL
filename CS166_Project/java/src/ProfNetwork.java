@@ -375,6 +375,10 @@ public class ProfNetwork {
 	   try{
 		   String query = String.format("SELECT connectionid FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
 		   esql.executeQueryAndPrintResult(query);
+		   System.out.println("Who to view? ");
+		   String getName = in.readLine();
+		   String query2 = String.format("SELECT * FROM WORK_EXPR WHERE userId='%s'",getName);
+		   esql.executeQueryAndPrintResult(query2);
 	   }catch(Exception e)
 	   {
 		   System.err.println(e.getMessage());
@@ -391,11 +395,20 @@ public class ProfNetwork {
 		   //Prompt who to add
 		   System.out.println("Who do you want to accept?");
 		   String getName = in.readLine();
-		   //still need to add valid checker
+		   //Make sure enter name requested
+		   String query2 =  String.format("SELECT * FROM CONNECTION_USR WHERE connectionId='%s'",getName);
+		   int isValid = esql.executeQuery(query2);
 		   //Added them
-		   String query2 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",acceptStatus,getName);
-		   esql.executeUpdate(query2);
-		   System.out.println("Accepted!");
+		   if(isValid > 0)
+		   {
+			   String query3 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",acceptStatus,getName);
+			   esql.executeUpdate(query3);
+			   System.out.println("Accepted!");
+		   }
+		   else
+		   {
+			   System.out.println("Not on request list");
+		   }
 	   }catch(Exception e)
 	   {
 		   System.out.println("Error!");
