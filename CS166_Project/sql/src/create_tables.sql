@@ -6,43 +6,43 @@ DROP TABLE USR;
 
 
 CREATE TABLE USR(
-	userId 	char(50) UNIQUE NOT NULL, 
+	userId 	varchar(50) UNIQUE NOT NULL, 
 	password varchar(50) NOT NULL,
 	email text NOT NULL,
-	name char(50),
+	name varchar(50),
 	dateOfBirth date,
 	Primary Key(userId));
 
 CREATE TABLE WORK_EXPR(
-	userId char(50) NOT NULL, 
-	company char(50) NOT NULL, 
-	role char(50) NOT NULL,
-	location char(50),
+	userId varchar(50) NOT NULL, 
+	company varchar(50) NOT NULL, 
+	role varchar(50) NOT NULL,
+	location varchar(50),
 	startDate date,
 	endDate date,
 	PRIMARY KEY(userId,company,role,startDate));
 
 CREATE TABLE EDUCATIONAL_DETAILS(
-	userId char(50) NOT NULL, 
+	userId varchar(50) NOT NULL, 
 	instituitionName char(500) NOT NULL, 
-	major char(500) NOT NULL,
-	degree char(500) NOT NULL,
+	major varchar(500) NOT NULL,
+	degree varchar(500) NOT NULL,
 	startdate date,
 	enddate date,
 	PRIMARY KEY(userId,major,degree));
 
 CREATE TABLE MESSAGE(
 	msgId integer UNIQUE NOT NULL, 
-	senderId char(500) NOT NULL,
-	receiverId char(500) NOT NULL,
-	contents char(300) NOT NULL,
+	senderId varchar(500) NOT NULL,
+	receiverId varchar(500) NOT NULL,
+	contents varchar(300) NOT NULL,
 	sendTime timestamp,
 	deleteStatus integer,
-	status char(500) NOT NULL,
+	status varchar(500) NOT NULL,
 	PRIMARY KEY(msgId));
 
 CREATE TABLE CONNECTION_USR(
-	userId char(50) NOT NULL, 
-	connectionId char(50) NOT NULL, 
-	status char(50) NOT NULL,
+	userId varchar(50) NOT NULL, 
+	connectionId varchar(50) NOT NULL, 
+	status varchar(50) NOT NULL,
 	PRIMARY KEY(userId,connectionId));

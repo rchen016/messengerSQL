@@ -377,8 +377,10 @@ public class ProfNetwork {
 		   esql.executeQueryAndPrintResult(query);
 		   System.out.println("Who to view? ");
 		   String getName = in.readLine();
-		   String query2 = String.format("SELECT * FROM WORK_EXPR WHERE userId='%s'",getName);
+		   String query2 = String.format("SELECT U.name, W.company, W.role FROM WORK_EXPR W, USR U WHERE W.userId=U.userId AND U.userId='%s'",getName);
 		   esql.executeQueryAndPrintResult(query2);
+		   String query3 = String.format("SELECT ED.instituitionName, ED.degree FROM EDUCATIONAL_DETAILS ED, USR U WHERE U.userId=ED.userId AND ED.userId='%s'",getName);
+		   esql.executeQueryAndPrintResult(query3);
 	   }catch(Exception e)
 	   {
 		   System.err.println(e.getMessage());
