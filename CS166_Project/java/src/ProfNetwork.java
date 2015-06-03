@@ -373,7 +373,7 @@ public class ProfNetwork {
 	   String status = "Accept";
 	  // System.out.println(userId);
 	   try{
-		   String query = String.format("SELECT connectionid FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
+		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
 		   esql.executeQueryAndPrintResult(query);
 		   System.out.println("Who to view? ");
 		   String getName = in.readLine();
@@ -401,10 +401,15 @@ public class ProfNetwork {
 		   //Added them
 		   if(isValid > 0)
 		   {
+			   //Change Request to Accepted
 			   String query3 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",acceptStatus,getName);
 			   esql.executeUpdate(query3);
 			   System.out.println("Accepted!");
+			   //Add Friend on Requester's list
+			   String query4 = String.format("INSERT INTO CONNECTION_USR VALUES('%s','%s','%s')",getName,userId,"Accept");
+			   esql.executeUpdate(query4);
 		   }
+
 		   else
 		   {
 			   System.out.println("Not on request list");
