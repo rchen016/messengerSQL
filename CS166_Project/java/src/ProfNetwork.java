@@ -387,12 +387,14 @@ public class ProfNetwork {
 		   //get messageId
 		   String query = String.format("SELECT COUNT(*) AS ORDERS FROM MESSAGE");
 		   msgId = esql.executeQueryAndPrintResultVALUE(query);
+		   msgId++;
+		   System.out.println(msgId);
 		   System.out.println("Who to write to? ");
 		   String getName = in.readLine();
 		   System.out.println("Message? ");
 		   String getMessage = in.readLine();
-		   String query2 = String.format("INSERT INTO MESSAGE VALUES('%i','%s','%s','%s','%s','%i','%s')",msgId,userId,getName,getMessage,currentTimestamp,status,fakestatus);
-		   //esql.executeQuery(query2);
+		   String query2 = String.format("INSERT INTO MESSAGE VALUES('%d','%s','%s','%s','%s','%d','%s')",msgId,userId,getName,getMessage,currentTimestamp,status,fakestatus);
+		   esql.executeUpdate(query2);
 	   }catch(Exception e)
 	   {
 		   System.err.println(e.getMessage());
@@ -500,7 +502,14 @@ public class ProfNetwork {
   
    public static void viewMessage(ProfNetwork esql, String userId)
    {
-   	
+	   int msgId = 200;
+	   try{
+		   String query = String.format("SELECT M.contents FROM MESSAGE M, USR U WHERE M.receiverId=U.userId AND U.userId='%s'",userId);
+		   esql.executeQueryAndPrintResult(query);
+	   }catch(Exception e)
+	   {
+		   System.err.println(e.getMessage());
+	   }
    }
    /////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////
