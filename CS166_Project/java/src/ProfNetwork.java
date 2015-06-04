@@ -115,13 +115,13 @@ public class ProfNetwork {
       while (rs.next()){
 	 if(outputHeader){
 	    for(int i = 1; i <= numCol; i++){
-		System.out.print(rsmd.getColumnName(i) + "\tb");
+		System.out.print(rsmd.getColumnName(i) + "\t");
 	    }
 	    System.out.println();
 	    outputHeader = false;
 	 }
          for (int i=1; i<=numCol; ++i)
-            System.out.print (rs.getString (i) + "\ta");
+            System.out.print (rs.getString (i) + "\t");
          System.out.println ();
          ++rowCount;
       }//end while
@@ -504,7 +504,7 @@ public class ProfNetwork {
    {
 	   int msgId = 200;
 	   try{
-		   String query = String.format("SELECT M.contents FROM MESSAGE M, USR U WHERE M.receiverId=U.userId AND U.userId='%s'",userId);
+		   String query = String.format("SELECT M.msgId, M.contents, M.senderId FROM MESSAGE M, USR U WHERE M.receiverId=U.userId AND U.userId='%s'",userId);
 		   esql.executeQueryAndPrintResult(query);
 	   }catch(Exception e)
 	   {

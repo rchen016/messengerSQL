@@ -35,3 +35,5 @@ ERROR:  duplicate key violates unique constraint "message_pkey"
 LOG:  unexpected EOF on client connection
 LOG:  unexpected EOF on client connection
 LOG:  unexpected EOF on client connection
+LOG:  unexpected EOF on client connection
+LOG:  unexpected EOF on client connection
