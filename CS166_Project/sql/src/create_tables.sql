@@ -24,7 +24,7 @@ CREATE TABLE WORK_EXPR(
 
 CREATE TABLE EDUCATIONAL_DETAILS(
 	userId varchar(50) NOT NULL, 
-	instituitionName char(500) NOT NULL, 
+	instituitionName varchar(500) NOT NULL, 
 	major varchar(500) NOT NULL,
 	degree varchar(500) NOT NULL,
 	startdate date,

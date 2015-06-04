@@ -271,16 +271,16 @@ public class ProfNetwork {
 			    System.out.println("2. Update Password");
 			    System.out.println("3. Write a new message");
 			    System.out.println("4. Send Connection Request");
-			    System.out.println("5. Accept Connection Request");
+			    System.out.println("5. Respond to Connection Request");
 			    System.out.println("6. View Friends");
                 System.out.println(".........................");
                 System.out.println("9. Log out");
                 switch (readChoice()){
 		   		   case 1: friendFinder(esql); break;
 			       case 2: updatePassword(esql); break;
-				   case 3: writeMessage(esql); break;
+				   case 3: writeMessage(esql, authorisedUser); break;
 				   case 4: sendRequest(esql,authorisedUser); break;
-				   case 5: acceptRequest(esql,authorisedUser); break;
+				   case 5: resondToRequest(esql,authorisedUser); break;
 				   case 6: viewFriends(esql,authorisedUser); break;
                    case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
@@ -363,9 +363,14 @@ public class ProfNetwork {
 	   }
    }
    
-   public static void writeMessage(ProfNetwork esql)
-   {
-   	
+   public static void writeMessage(ProfNetwork esql, String userId)
+   {/*/
+	   try{
+		   String query = String.format("INSER INTO ")
+	   }catch(Exception e)
+	   {
+		   System.err.println(e.getMessage());
+	   }*/
    }
    
    public static void viewFriends(ProfNetwork esql, String userId)
@@ -386,30 +391,47 @@ public class ProfNetwork {
 		   System.err.println(e.getMessage());
 	   }
    }
-   public static void acceptRequest(ProfNetwork esql, String userId)
+   public static void resondToRequest(ProfNetwork esql, String userId)
    {
 	   String status = "Request";
 	   String acceptStatus = "Accept";
+	   String rejectStatus = "Reject";
 	   try{
 		   //Display requesters
 		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
 		   esql.executeQueryAndPrintResult(query);
 		   //Prompt who to add
-		   System.out.println("Who do you want to accept?");
+		   System.out.println("Who do you want to accept/reject?");
 		   String getName = in.readLine();
+		   System.out.println("1 to Accept, 2 to Reject");
+		   String choice = in.readLine();
 		   //Make sure enter name requested
 		   String query2 =  String.format("SELECT * FROM CONNECTION_USR WHERE connectionId='%s'",getName);
 		   int isValid = esql.executeQuery(query2);
 		   //Added them
 		   if(isValid > 0)
 		   {
-			   //Change Request to Accepted
-			   String query3 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",acceptStatus,getName);
-			   esql.executeUpdate(query3);
-			   System.out.println("Accepted!");
-			   //Add Friend on Requester's list
-			   String query4 = String.format("INSERT INTO CONNECTION_USR VALUES('%s','%s','%s')",getName,userId,"Accept");
-			   esql.executeUpdate(query4);
+			   System.out.println("Choice "+choice);
+			   if(choice.equals("1"))
+			   {
+				   //Change Request to Accepted
+				   String query3 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",acceptStatus,getName);
+				   esql.executeUpdate(query3);
+				   System.out.println("Accepted!");
+				   //Add Friend on Requester's list
+				   String query4 = String.format("INSERT INTO CONNECTION_USR VALUES('%s','%s','%s')",getName,userId,"Accept");
+				   esql.executeUpdate(query4);
+			   }
+			   else
+			   {
+				   //change status to Reject
+				   String query5 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",rejectStatus,getName);
+				   esql.executeUpdate(query5);
+				   //remove from connection table
+				   String query6 = String.format("DELETE FROM CONNECTION_USR WHERE connectionId='%s'",getName);
+				   esql.executeUpdate(query6);
+				   System.out.println("REJECTED!");
+			   }
 		   }
 
 		   else
