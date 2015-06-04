@@ -23,7 +23,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
-
+import java.util.Calendar;
+import java.util.Date;
+import java.sql.Timestamp;
 /**
  * This class defines a simple embedded SQL utility class that is designed to
  * work with PostgreSQL JDBC drivers.
@@ -113,20 +115,52 @@ public class ProfNetwork {
       while (rs.next()){
 	 if(outputHeader){
 	    for(int i = 1; i <= numCol; i++){
-		System.out.print(rsmd.getColumnName(i) + "\t");
+		System.out.print(rsmd.getColumnName(i) + "\tb");
 	    }
 	    System.out.println();
 	    outputHeader = false;
 	 }
          for (int i=1; i<=numCol; ++i)
-            System.out.print (rs.getString (i) + "\t");
+            System.out.print (rs.getString (i) + "\ta");
          System.out.println ();
          ++rowCount;
       }//end while
       stmt.close ();
       return rowCount;
    }//end executeQuery
+   //////////////
+   //////////////
+   public int executeQueryAndPrintResultVALUE (String query) throws SQLException {
+      // creates a statement object
+      Statement stmt = this._connection.createStatement ();
+	  String result;
+	  int count = 0;
+      // issues the query instruction
+      ResultSet rs = stmt.executeQuery (query);
 
+      /*
+       ** obtains the metadata object for the returned result set.  The metadata
+       ** contains row and column info.
+       */
+      ResultSetMetaData rsmd = rs.getMetaData ();
+      int numCol = rsmd.getColumnCount ();
+      int rowCount = 0;
+
+      // iterates through the result set and output them to standard out.
+      boolean outputHeader = true;
+      while (rs.next()){
+         result = rs.getString(1); 
+		 count = Integer.parseInt(result);
+         System.out.println ();
+	 }
+      	 stmt.close ();
+		 return count;
+      //return rowCount;
+   }//end executeQuery
+   
+   
+   ///////////////
+   //////////////
    /**
     * Method to execute an input query SQL instruction (i.e. SELECT).  This
     * method issues the query to the DBMS and returns the results as
@@ -273,6 +307,7 @@ public class ProfNetwork {
 			    System.out.println("4. Send Connection Request");
 			    System.out.println("5. Respond to Connection Request");
 			    System.out.println("6. View Friends");
+				System.out.println("7. View Messages");
                 System.out.println(".........................");
                 System.out.println("9. Log out");
                 switch (readChoice()){
@@ -282,6 +317,7 @@ public class ProfNetwork {
 				   case 4: sendRequest(esql,authorisedUser); break;
 				   case 5: resondToRequest(esql,authorisedUser); break;
 				   case 6: viewFriends(esql,authorisedUser); break;
+				   case 7: viewMessage(esql,authorisedUser); break;
                    case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
@@ -307,6 +343,20 @@ public class ProfNetwork {
    /////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////
    //Project 3
+   public static void friendFinder(ProfNetwork esql)
+   {
+	   try{
+		   //Prompt For friend lookup
+		   System.out.println("Who to lookup?");
+		   String whichFriend = in.readLine();
+		   String query = String.format("SELECT userId FROM USR WHERE name='%s'",whichFriend);
+		   esql.executeQueryAndPrintResult(query);
+	   }
+	   catch(Exception e){
+	   		System.out.println("Friend Finder Error");
+	   }
+   }
+   
    public static void updatePassword(ProfNetwork esql)
    {
 	   try{
@@ -323,17 +373,29 @@ public class ProfNetwork {
   	   }
    }
    
-   public static void friendFinder(ProfNetwork esql)
+   public static void writeMessage(ProfNetwork esql, String userId)
    {
+	   int msgId = 0;
+	   String faketimestamp = "11/11/11 9:43";
+	   String fakestatus = "delievered";
+	   Calendar calendar = Calendar.getInstance();
+	   Date currentTimestamp = new Timestamp(calendar.getTime().getTime());
+	   System.out.println("Time Breh "+currentTimestamp);
+	   int status = 0;
 	   try{
-		   //Prompt For friend lookup
-		   System.out.println("Who to lookup?");
-		   String whichFriend = in.readLine();
-		   String query = String.format("SELECT userId FROM USR WHERE name='%s'",whichFriend);
-		   esql.executeQueryAndPrintResult(query);
-	   }
-	   catch(Exception e){
-	   		System.out.println("Friend Finder Error");
+		   
+		   //get messageId
+		   String query = String.format("SELECT COUNT(*) AS ORDERS FROM MESSAGE");
+		   msgId = esql.executeQueryAndPrintResultVALUE(query);
+		   System.out.println("Who to write to? ");
+		   String getName = in.readLine();
+		   System.out.println("Message? ");
+		   String getMessage = in.readLine();
+		   String query2 = String.format("INSERT INTO MESSAGE VALUES('%i','%s','%s','%s','%s','%i','%s')",msgId,userId,getName,getMessage,currentTimestamp,status,fakestatus);
+		   //esql.executeQuery(query2);
+	   }catch(Exception e)
+	   {
+		   System.err.println(e.getMessage());
 	   }
    }
    
@@ -363,34 +425,6 @@ public class ProfNetwork {
 	   }
    }
    
-   public static void writeMessage(ProfNetwork esql, String userId)
-   {/*/
-	   try{
-		   String query = String.format("INSER INTO ")
-	   }catch(Exception e)
-	   {
-		   System.err.println(e.getMessage());
-	   }*/
-   }
-   
-   public static void viewFriends(ProfNetwork esql, String userId)
-   {
-	   String status = "Accept";
-	  // System.out.println(userId);
-	   try{
-		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
-		   esql.executeQueryAndPrintResult(query);
-		   System.out.println("Who to view? ");
-		   String getName = in.readLine();
-		   String query2 = String.format("SELECT U.name, W.company, W.role FROM WORK_EXPR W, USR U WHERE W.userId=U.userId AND U.userId='%s'",getName);
-		   esql.executeQueryAndPrintResult(query2);
-		   String query3 = String.format("SELECT ED.instituitionName, ED.degree FROM EDUCATIONAL_DETAILS ED, USR U WHERE U.userId=ED.userId AND ED.userId='%s'",getName);
-		   esql.executeQueryAndPrintResult(query3);
-	   }catch(Exception e)
-	   {
-		   System.err.println(e.getMessage());
-	   }
-   }
    public static void resondToRequest(ProfNetwork esql, String userId)
    {
 	   String status = "Request";
@@ -445,6 +479,29 @@ public class ProfNetwork {
 	   }
    }
    
+   public static void viewFriends(ProfNetwork esql, String userId)
+   {
+	   String status = "Accept";
+	  // System.out.println(userId);
+	   try{
+		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
+		   esql.executeQueryAndPrintResult(query);
+		   System.out.println("Who to view? ");
+		   String getName = in.readLine();
+		   String query2 = String.format("SELECT U.name, W.company, W.role FROM WORK_EXPR W, USR U WHERE W.userId=U.userId AND U.userId='%s'",getName);
+		   esql.executeQueryAndPrintResult(query2);
+		   String query3 = String.format("SELECT ED.instituitionName, ED.degree FROM EDUCATIONAL_DETAILS ED, USR U WHERE U.userId=ED.userId AND ED.userId='%s'",getName);
+		   esql.executeQueryAndPrintResult(query3);
+	   }catch(Exception e)
+	   {
+		   System.err.println(e.getMessage());
+	   }
+   }
+  
+   public static void viewMessage(ProfNetwork esql, String userId)
+   {
+   	
+   }
    /////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////
    
