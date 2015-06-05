@@ -314,10 +314,10 @@ public class ProfNetwork {
 		   		   case 1: friendFinder(esql); break;
 			       case 2: updatePassword(esql); break;
 				   case 3: writeMessage(esql, authorisedUser); break;
-				   case 4: sendRequest(esql,authorisedUser); break;
-				   case 5: resondToRequest(esql,authorisedUser); break;
-				   case 6: viewFriends(esql,authorisedUser); break;
-				   case 7: viewMessage(esql,authorisedUser); break;
+				   case 4: sendRequest(esql, authorisedUser); break;
+				   case 5: resondToRequest(esql, authorisedUser); break;
+				   case 6: viewFriends(esql, authorisedUser); break;
+				   case 7: viewMessage(esql, authorisedUser); break;
                    case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
@@ -383,16 +383,17 @@ public class ProfNetwork {
 	   System.out.println("Time Breh "+currentTimestamp);
 	   int status = 0;
 	   try{
-		   
-		   //get messageId
-		   String query = String.format("SELECT COUNT(*) AS ORDERS FROM MESSAGE");
+		   //get new messageId
+		   String query = String.format("SELECT MAX(msgId) FROM MESSAGE");
 		   msgId = esql.executeQueryAndPrintResultVALUE(query);
 		   msgId++;
+		   //Prompt
 		   System.out.println(msgId);
 		   System.out.println("Who to write to? ");
 		   String getName = in.readLine();
 		   System.out.println("Message? ");
 		   String getMessage = in.readLine();
+		   //Add Message to receiver
 		   String query2 = String.format("INSERT INTO MESSAGE VALUES('%d','%s','%s','%s','%s','%d','%s')",msgId,userId,getName,getMessage,currentTimestamp,status,fakestatus);
 		   esql.executeUpdate(query2);
 	   }catch(Exception e)
@@ -480,20 +481,51 @@ public class ProfNetwork {
 		   System.err.println(e.getMessage());
 	   }
    }
+   //Used to message people from view friend. C/P of writeMessage
+   public static void viewFriendWriteHelper(ProfNetwork esql, String userId, String receiver)
+   {
+	   int msgId = 0;
+	   Calendar calendar = Calendar.getInstance();
+	   String faketimestamp = "11/11/11 9:43";
+	   String fakestatus = "delievered";
+	   Date currentTimestamp = new Timestamp(calendar.getTime().getTime());
+	   int status = 0;
+	   try{
+		   //get messageId
+		   String query = String.format("SELECT MAX(msgId) FROM MESSAGE");
+		   msgId = esql.executeQueryAndPrintResultVALUE(query);
+		   msgId++;
+		   System.out.println(msgId);
+		   System.out.println("Message? ");
+		   String getMessage = in.readLine();
+		   String query2 = String.format("INSERT INTO MESSAGE VALUES('%d','%s','%s','%s','%s','%d','%s')",msgId,userId,receiver,getMessage,currentTimestamp,status,fakestatus);
+		   esql.executeUpdate(query2);
+	   }catch(Exception e)
+	   {
+		   System.err.println(e.getMessage());
+	   }
+   }
    
    public static void viewFriends(ProfNetwork esql, String userId)
    {
 	   String status = "Accept";
 	  // System.out.println(userId);
 	   try{
-		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
+	  	 String query = String.format("SELECT C.userId as Username FROM CONNECTION_USR C, USR U WHERE C.connectionId=U.userId AND U.userId='%s' AND status='%s'",userId,status);
 		   esql.executeQueryAndPrintResult(query);
-		   System.out.println("Who to view? ");
+		   System.out.println("Who to view?");
+		  // String getChoice = in.readLine();
 		   String getName = in.readLine();
 		   String query2 = String.format("SELECT U.name, W.company, W.role FROM WORK_EXPR W, USR U WHERE W.userId=U.userId AND U.userId='%s'",getName);
 		   esql.executeQueryAndPrintResult(query2);
 		   String query3 = String.format("SELECT ED.instituitionName, ED.degree FROM EDUCATIONAL_DETAILS ED, USR U WHERE U.userId=ED.userId AND ED.userId='%s'",getName);
 		   esql.executeQueryAndPrintResult(query3);
+		   System.out.println("Message? Y/N");
+		   String getChoice2 = in.readLine();
+		   if(getChoice2.equals("Y") || getChoice2.equals("y"))
+		   {
+		   	  viewFriendWriteHelper(esql, userId, getName);
+		   }
 	   }catch(Exception e)
 	   {
 		   System.err.println(e.getMessage());
@@ -502,15 +534,24 @@ public class ProfNetwork {
   
    public static void viewMessage(ProfNetwork esql, String userId)
    {
-	   int msgId = 200;
 	   try{
-		   String query = String.format("SELECT M.msgId, M.contents, M.senderId FROM MESSAGE M, USR U WHERE M.receiverId=U.userId AND U.userId='%s'",userId);
+		   String query = String.format("SELECT M.msgId, M.contents, M.senderId AS Sender FROM MESSAGE M, USR U WHERE M.receiverId=U.userId AND U.userId='%s'",userId);
 		   esql.executeQueryAndPrintResult(query);
+		   System.out.println("Delete Message? Y/N");
+		   String answer = in.readLine();
+		   if(answer.equals("Y") || answer.equals("y"))
+		   {
+			   System.out.println("Enter msgId");
+			   int msgId = Integer.parseInt(in.readLine());
+			   String query2 = String.format("DELETE FROM MESSAGE WHERE msgId='%d'",msgId);
+			   esql.executeUpdate(query2);
+		   }	   
 	   }catch(Exception e)
 	   {
 		   System.err.println(e.getMessage());
 	   }
    }
+   
    /////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////
    
