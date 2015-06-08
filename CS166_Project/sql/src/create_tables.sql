@@ -1,3 +1,8 @@
+/*
+Ricky Chen 860998560
+Steven Em 860878417
+GroupId 19
+*/
 DROP TABLE WORK_EXPR;
 DROP TABLE EDUCATIONAL_DETAILS;
 DROP TABLE MESSAGE;
@@ -20,7 +25,8 @@ CREATE TABLE WORK_EXPR(
 	location varchar(50),
 	startDate date,
 	endDate date,
-	PRIMARY KEY(userId,company,role,startDate));
+	PRIMARY KEY(userId,company,role,startDate),
+	CONSTRAINT WORKID FOREIGN KEY(userId) REFERENCES USR(userId));
 
 CREATE TABLE EDUCATIONAL_DETAILS(
 	userId varchar(50) NOT NULL, 
@@ -29,7 +35,8 @@ CREATE TABLE EDUCATIONAL_DETAILS(
 	degree varchar(500) NOT NULL,
 	startdate date,
 	enddate date,
-	PRIMARY KEY(userId,major,degree));
+	PRIMARY KEY(userId,major,degree),
+	CONSTRAINT EDUCATIONID FOREIGN KEY(userId) REFERENCES USR(userId));
 
 CREATE TABLE MESSAGE(
 	msgId integer UNIQUE NOT NULL, 
@@ -39,10 +46,12 @@ CREATE TABLE MESSAGE(
 	sendTime timestamp,
 	deleteStatus integer,
 	status varchar(500) NOT NULL,
-	PRIMARY KEY(msgId));
+	PRIMARY KEY(msgId),
+	CONSTRAINT MESSAGEID FOREIGN KEY(senderId) REFERENCES USR(userId));
 
 CREATE TABLE CONNECTION_USR(
 	userId varchar(50) NOT NULL, 
 	connectionId varchar(50) NOT NULL, 
 	status varchar(50) NOT NULL,
-	PRIMARY KEY(userId,connectionId));
+	PRIMARY KEY(userId,connectionId),
+	CONSTRAINT CONNECTIONUSRID FOREIGN KEY(userId) REFERENCES USR(userId));

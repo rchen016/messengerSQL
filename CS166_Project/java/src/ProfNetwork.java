@@ -1,4 +1,9 @@
 /*
+Ricky Chen 860998560
+Steven Em 860878417
+GroupId 19
+*/
+/*
  * Template JAVA User Interface
  * =============================
  *
@@ -315,7 +320,7 @@ public class ProfNetwork {
 			       case 2: updatePassword(esql); break;
 				   case 3: writeMessage(esql, authorisedUser); break;
 				   case 4: sendRequest(esql, authorisedUser); break;
-				   case 5: resondToRequest(esql, authorisedUser); break;
+				   case 5: respondToRequest (esql, authorisedUser); break;
 				   case 6: viewFriends(esql, authorisedUser); break;
 				   case 7: viewMessage(esql, authorisedUser); break;
                    case 9: usermenu = false; break;
@@ -354,6 +359,7 @@ public class ProfNetwork {
 	   }
 	   catch(Exception e){
 	   		System.out.println("Friend Finder Error");
+			System.err.println(e.getMessage());
 	   }
    }
    
@@ -370,17 +376,17 @@ public class ProfNetwork {
 	   }
   	   catch(Exception e){
   		 System.out.println("Invalid Password Update");
+		 System.err.println(e.getMessage());
   	   }
    }
    
    public static void writeMessage(ProfNetwork esql, String userId)
    {
 	   int msgId = 0;
-	   String faketimestamp = "11/11/11 9:43";
-	   String fakestatus = "delievered";
+	   String condition = "delievered";
 	   Calendar calendar = Calendar.getInstance();
 	   Date currentTimestamp = new Timestamp(calendar.getTime().getTime());
-	   System.out.println("Time Breh "+currentTimestamp);
+	  // System.out.println("Time Breh "+currentTimestamp);
 	   int status = 0;
 	   try{
 		   //get new messageId
@@ -388,16 +394,17 @@ public class ProfNetwork {
 		   msgId = esql.executeQueryAndPrintResultVALUE(query);
 		   msgId++;
 		   //Prompt
-		   System.out.println(msgId);
+		  // System.out.println(msgId);
 		   System.out.println("Who to write to? ");
 		   String getName = in.readLine();
 		   System.out.println("Message? ");
 		   String getMessage = in.readLine();
 		   //Add Message to receiver
-		   String query2 = String.format("INSERT INTO MESSAGE VALUES('%d','%s','%s','%s','%s','%d','%s')",msgId,userId,getName,getMessage,currentTimestamp,status,fakestatus);
+		   String query2 = String.format("INSERT INTO MESSAGE VALUES('%d','%s','%s','%s','%s','%d','%s')",msgId,userId,getName,getMessage,currentTimestamp,status,condition);
 		   esql.executeUpdate(query2);
 	   }catch(Exception e)
 	   {
+		   System.out.println("Message Error");
 		   System.err.println(e.getMessage());
 	   }
    }
@@ -428,14 +435,14 @@ public class ProfNetwork {
 	   }
    }
    
-   public static void resondToRequest(ProfNetwork esql, String userId)
+   public static void respondToRequest(ProfNetwork esql, String userId)
    {
 	   String status = "Request";
 	   String acceptStatus = "Accept";
 	   String rejectStatus = "Reject";
 	   try{
 		   //Display requesters
-		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE userId='%s' AND status='%s'",userId,status);
+		   String query = String.format("SELECT * FROM CONNECTION_USR WHERE userId='%s'",userId,status);
 		   esql.executeQueryAndPrintResult(query);
 		   //Prompt who to add
 		   System.out.println("Who do you want to accept/reject?");
@@ -452,10 +459,12 @@ public class ProfNetwork {
 			   if(choice.equals("1"))
 			   {
 				   //Change Request to Accepted
+				 //  System.out.println("Check: "+acceptStatus+" "+getName);
 				   String query3 = String.format("UPDATE CONNECTION_USR SET status='%s' WHERE connectionId='%s'",acceptStatus,getName);
 				   esql.executeUpdate(query3);
 				   System.out.println("Accepted!");
 				   //Add Friend on Requester's list
+				//   System.out.println("Check2: "+getName+" "+userId);
 				   String query4 = String.format("INSERT INTO CONNECTION_USR VALUES('%s','%s','%s')",getName,userId,"Accept");
 				   esql.executeUpdate(query4);
 			   }
@@ -535,17 +544,27 @@ public class ProfNetwork {
    public static void viewMessage(ProfNetwork esql, String userId)
    {
 	   try{
-		   String query = String.format("SELECT M.msgId, M.contents, M.senderId AS Sender FROM MESSAGE M, USR U WHERE M.receiverId=U.userId AND U.userId='%s'",userId);
+		   String query = String.format("SELECT M.msgId, M.contents, M.senderId AS Sender, M.status FROM MESSAGE M, USR U WHERE M.receiverId=U.userId AND U.userId='%s'",userId);
 		   esql.executeQueryAndPrintResult(query);
-		   System.out.println("Delete Message? Y/N");
-		   String answer = in.readLine();
-		   if(answer.equals("Y") || answer.equals("y"))
+		   int empty = esql.executeQuery(query);
+		   if(empty>0)
 		   {
-			   System.out.println("Enter msgId");
-			   int msgId = Integer.parseInt(in.readLine());
-			   String query2 = String.format("DELETE FROM MESSAGE WHERE msgId='%d'",msgId);
-			   esql.executeUpdate(query2);
-		   }	   
+			   String query3 = String.format("UPDATE MESSAGE SET status='%s' WHERE receiverId='%s'","Read",userId);
+			   esql.executeUpdate(query3);
+			   System.out.println("Delete Message? Y/N");
+			   String answer = in.readLine();
+			   if(answer.equals("Y") || answer.equals("y"))
+			   {
+				   System.out.println("Enter msgId");
+				   int msgId = Integer.parseInt(in.readLine());
+				   String query2 = String.format("DELETE FROM MESSAGE WHERE msgId='%d'",msgId);
+				   esql.executeUpdate(query2);
+			   }	
+		   }
+		   else
+		   {
+			   System.out.println("No Messages");
+		   }  
 	   }catch(Exception e)
 	   {
 		   System.err.println(e.getMessage());
